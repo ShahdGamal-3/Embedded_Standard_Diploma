@@ -1,0 +1,374 @@
+/*
+ * Name        : Interfacing1_project
+ * Author      : Shahd Gamal
+ * Date        : 9/9/2024
+ * Description : StopWatch with Dual Mode (Increment and Countdown)
+ */
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
+#define MODE_BUTTON_PRESSED (!(PINB & (1<<PB7))) //toggle-mode button is pressed (decrement mode)
+#define BUTTON_INCREMENT_SECONDS_PRESSED (!(PINB & (1<<PB6)))
+#define BUTTON_DECREMENT_SECONDS_PRESSED (!(PINB & (1<<PB5)))
+#define BUTTON_INCREMENT_MINUTES_PRESSED (!(PINB & (1<<PB4)))
+#define BUTTON_DECREMENT_MINUTES_PRESSED (!(PINB & (1<<PB3)))
+#define BUTTON_INCREMENT_HOURS_PRESSED (!(PINB & (1<<PB1)))
+#define BUTTON_DECREMENT_HOURS_PRESSED (!(PINB & (1<<PB0)))
+
+#define COMPARE_VALUE 15624 //using pre-scaler = 1024, to count 1 second with Freq = 16MHz
+#define GLOBAL_INTERRUPT_ENABLE_BIT 7
+#define DELAY_FOR_SEGMENTS 2 //delay in ms for segments display
+#define INITIAL_VALUE_FOR_TIMER1 0
+#define INCREMENT_MODE 0
+#define DECREMENT_MODE 1
+
+unsigned char seconds_Increment_flag =0;
+unsigned char seconds_Decrement_flag =0;
+unsigned char minutes_Increment_flag =0;
+unsigned char minutes_Decrement_flag =0;
+unsigned char hours_Increment_flag =0;
+unsigned char hours_Decrement_flag =0;
+unsigned char mode_flag =0;
+unsigned char tick_Timer1 =0;
+unsigned char pause_flag =0;
+unsigned char mode =0;
+
+//define time elements
+struct stopWatch
+{
+	unsigned char hours, minutes, seconds;
+}time;
+//////////////////////////////////////////////////////
+
+ISR (INT0_vect) //Reset
+{
+	//Reset time to (00:00:00)
+	time.hours = 0;
+	time.minutes = 0;
+	time.seconds = 0;
+}
+
+ISR (INT1_vect) //Pause
+{
+	TCCR1B &= ~(1<<CS10) & ~(1<<CS11) & ~(1<<CS12); //stop timer by adding no clock
+	PORTD &= ~(1<<PD0); //set buzzer off
+}
+
+ISR (INT2_vect) //Resume
+{
+	TCCR1B |= (1<<CS10) | (1<<CS12); //resume time by re-set pre-scaler = 1024
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	tick_Timer1 ++;
+	if (mode == INCREMENT_MODE) //check increment mode
+	{
+		Increment_Time ();
+	}
+	else if (mode == DECREMENT_MODE)
+	{
+		Decrement_Time ();
+	}
+
+}
+/////////////////////////////////////////////////////
+
+void Timer1_stopWatchTime_Init (void)
+{
+	TCCR1B = (1<<WGM12) | (1<<CS10) | (1<<CS12); //set CTC mode, and pre-scaler = 1024
+	OCR1A = COMPARE_VALUE;
+	TCNT1 = INITIAL_VALUE_FOR_TIMER1; //Initial value of timer
+	TIMSK |= (1<<OCIE1A); //Compare A Match Interrupt Enable
+}
+
+void Reset_INT0_Init (void)
+{
+	DDRD &= ~(1<<PD2); //set input pin for bush button
+	PORTD |= (1<<PD2); //enable internal pull-up resistor
+	MCUCR |= (1<<ISC01); //set that falling edge of INT0 generates an interrupt request
+	GICR |= (1<<INT0); //enable external Interrupt Request INT0
+	GIFR |= (1<<INTF0); //clear INT0 interrupt flag
+}
+
+void Pause_INT1_Init (void)
+{
+	DDRD &= ~(1<<PD3); //set input pin for bush button
+	MCUCR = (1<<ISC10) | (1<<ISC11); //set that rising edge of INT1 generates an interrupt request
+	GICR |= (1<<INT1); //enable external Interrupt Request INT1
+	GIFR |= (1<<INTF1); //clear INT1 interrupt flag
+}
+
+void Resume_INT2_Init (void)
+{
+	DDRB &= ~(1<<PB2); //set input pin for bush button
+	PORTB |= (1<<PB2); //enable internal pull-up resistor
+	GICR |= (1<<INT2); //enable external Interrupt Request INT2
+	GIFR |= (1<<INTF2); //clear INT2 interrupt flag
+}
+
+void Seven_Segment_Init (void)
+{
+	DDRC |= 0X0F; //set first 4-pins in PORTC output pins for decoder
+	PORTC &= 0xF0; //initialize decoder to display 0
+	DDRA |= 0X3F; //set first 6-pins in PORTA output pins for enable six 7-segments
+	PORTA &= 0xC0; //initially, disable all segments
+	PORTA |= 0x3F; //enable all segments
+}
+
+void Time_Adjustment_Buttons_Init (void)
+{
+	DDRB &= 0X84; //set pins PB0,PB1,PB3,PB4,PB5,PB6 input pins for bush-buttons
+	PORTB |= 0x7B; //enable internal pull-up resistor
+}
+
+void Count_Mode_Buttons_Init (void)
+{
+	DDRB &= ~(1<<PB7); //set input pin for toggle-mode button
+	PORTB |= (1<<PB7); //enable internal pull-up resistor
+}
+
+void Count_Mode_Leds_Init (void)
+{
+	DDRD |= (1<<PC4) | (1<<PC5); //set output pins for toggle-mode leds
+	PORTD = (PORTD | (1<<PD4)) & ~(1<<PD5); //turn on PD4 and turn off PD5
+}
+
+void Buzzer_Init (void)
+{
+	DDRD |= (1<<PD0); //set output pin for buzzer
+	PORTD &= ~(1<<PD0); //set buzzer off
+}
+///////////////////////////////////////////////////////////
+
+void Display_Time (void)
+{
+	PORTA = (PORTA & (0xC0)) | 0x20; //enable 1st segment of seconds, and disable of minutes and hours
+	PORTC = (PORTC & (0xF0)) | (time.seconds % 10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+
+	PORTA = (PORTA & (0xC0)) | 0x10; //enable 2nd segment of seconds, and disable of minutes and hours
+	PORTC = (PORTC & (0xF0)) | (time.seconds / 10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+
+	PORTA = (PORTA & (0xC0)) | 0x08; //enable 1st segment of minutes, and disable of seconds and hours
+	PORTC = (PORTC & (0xF0)) | (time.minutes % 10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+
+	PORTA = (PORTA & (0xC0)) | 0x04; //enable 2nd segment of minutes, and disable of seconds and hours
+	PORTC = (PORTC & (0xF0)) | (time.minutes /10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+
+	PORTA = (PORTA & (0xC0)) | 0x02; //enable 1st segment of hours, and disable of seconds and minutes
+	PORTC = (PORTC & (0xF0)) | (time.hours % 10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+
+	PORTA = (PORTA & (0xC0)) | 0x01; //enable 2nd segment of hours, and disable of seconds and minutes
+	PORTC = (PORTC & (0xF0)) | (time.hours / 10);
+	_delay_ms (DELAY_FOR_SEGMENTS); //delay for 2 ms
+}
+
+void Increment_Time (void)
+{
+	time.seconds++;
+	if (time.seconds >= 60)
+	{
+		time.seconds = 0;
+		time.minutes++;
+		if (time.minutes >= 60)
+		{
+			time.minutes = 0;
+			time.hours++;
+		}
+	}
+}
+
+void Decrement_Time (void)
+{
+	if (time.seconds > 0)
+	{
+		time.seconds--;
+	}
+	else if (time.minutes > 0 || time.hours > 0)
+	{
+		time.seconds = 59;
+		if (time.minutes > 0)
+		{
+			time.minutes--;
+		}
+		else if (time.hours > 0)
+		{
+			time.minutes = 59;
+			time.hours--;
+		}
+	}
+	else if (mode == DECREMENT_MODE)
+	{
+		PORTD |= (1<<PD0); //set buzzer on when countdown reaches 0
+	}
+}
+
+void Timer_Mode (void)
+{
+    if (MODE_BUTTON_PRESSED) //check decrement mode
+	{
+		PORTD |= (1<<PD5);  // Yellow LED on for Decrement Mode
+		PORTD &= ~(1<<PD4); // Red LED off for Increment Mode
+
+		if (mode_flag == 0)
+		{
+		  if (mode == INCREMENT_MODE )
+			  mode = DECREMENT_MODE;
+		  else
+			  mode = INCREMENT_MODE;
+
+		  mode_flag =1;
+		}
+	}
+	else
+	{
+		PORTD |= (1<<PD4);  // Red LED on for Increment Mode
+		PORTD &= ~(1<<PD5); // Yellow LED off for Decrement Mode
+		mode_flag =0;
+	}
+}
+
+//////////////////////////////////////////////////////////
+
+void Seconds_Adjustment (void)
+{
+	if(BUTTON_INCREMENT_SECONDS_PRESSED) // check if button of increment seconds is pressed
+	{
+		if (time.seconds >= 60)
+		{
+			time.seconds =0;
+			time.minutes ++;
+		}
+		else if(seconds_Increment_flag == 0)
+		{
+			time.seconds ++;
+			seconds_Increment_flag = 1;
+		}
+	}
+	else
+	{
+		seconds_Increment_flag = 0;
+	}
+
+	if(BUTTON_DECREMENT_SECONDS_PRESSED && time.seconds >0) // check if button of decrement seconds is pressed
+	{
+		if(seconds_Decrement_flag == 0)
+		{
+			time.seconds --;
+			seconds_Decrement_flag = 1;
+		}
+	}
+	else
+	{
+		seconds_Decrement_flag = 0;
+	}
+
+}
+
+void Minutes_Adjustment (void)
+{
+	if(BUTTON_INCREMENT_MINUTES_PRESSED) // check if button of increment minutes is pressed
+	{
+		if (time.minutes >= 60)
+		{
+			time.minutes =0;
+			time.hours ++;
+		}
+		else if(minutes_Increment_flag == 0)
+		{
+			time.minutes ++;
+			minutes_Increment_flag = 1;
+		}
+	}
+	else
+	{
+		minutes_Increment_flag = 0;
+	}
+
+	if(BUTTON_DECREMENT_MINUTES_PRESSED && time.minutes >0) // check if button of decrement minutes is pressed
+	{
+		if(minutes_Decrement_flag == 0)
+		{
+			time.minutes --;
+			minutes_Decrement_flag = 1;
+		}
+	}
+	else
+	{
+		minutes_Decrement_flag = 0;
+	}
+}
+
+void Hours_Adjustment (void)
+{
+	if(BUTTON_INCREMENT_HOURS_PRESSED) // check if button of increment hours is pressed
+	{
+		if (time.hours >= 24)
+		{
+			time.hours =24;
+		}
+		else if(hours_Increment_flag == 0)
+		{
+			time.hours ++;
+			hours_Increment_flag = 1;
+		}
+	}
+	else
+	{
+		hours_Increment_flag = 0;
+	}
+
+	if(BUTTON_DECREMENT_HOURS_PRESSED) // check if button of decrement hours is pressed
+	{
+		if (time.hours <= 0)
+		{
+			time.hours = 0;
+		}
+		else if(hours_Decrement_flag == 0)
+		{
+			time.hours --;
+			hours_Decrement_flag = 1;
+		}
+	}
+	else
+	{
+		hours_Decrement_flag = 0;
+	}
+}
+////////////////////////////////////////////////////////
+
+int main (void)
+{
+	Timer1_stopWatchTime_Init ();
+	Reset_INT0_Init ();
+	Pause_INT1_Init ();
+	Resume_INT2_Init ();
+	Seven_Segment_Init ();
+	Time_Adjustment_Buttons_Init ();
+	Count_Mode_Buttons_Init ();
+	Buzzer_Init ();
+
+	SREG |= (1<<GLOBAL_INTERRUPT_ENABLE_BIT); //set I-bit
+
+	while (1)
+	{
+		Display_Time ();
+		Seconds_Adjustment ();
+		Minutes_Adjustment ();
+		Hours_Adjustment ();
+		if (tick_Timer1)
+		{
+			Timer_Mode ();
+			//tick_Timer1 --;
+		}
+
+	}
+	return 0;
+}

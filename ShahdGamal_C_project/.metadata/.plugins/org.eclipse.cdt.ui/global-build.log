@@ -1,0 +1,301 @@
+12:24:36 **** Rebuild of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+..\Shahd_c_project.c:21:9: warning: "NULL" redefined
+   21 | #define NULL (void*)0
+      |         ^~~~
+In file included from ..\Shahd_c_project.c:1:
+C:/MinGW/x86_64-w64-mingw32/include/stdio.h:87:9: note: this is the location of the previous definition
+   87 | #define NULL ((void *)0)
+      |         ^~~~
+..\Shahd_c_project.c: In function 'main':
+..\Shahd_c_project.c:337:26: warning: format '%d' expects argument of type 'int *', but argument 2 has type 'enum choose_function *' [-Wformat=]
+  337 |                 scanf ("%d", &choice);
+      |                         ~^   ~~~~~~~
+      |                          |   |
+      |                          |   enum choose_function *
+      |                          int *
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+12:26:40 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+12:30:27 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+12:30:33 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+12:31:01 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+12:32:34 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+12:35:43 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+12:36:59 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+..\Shahd_c_project.c: In function 'main':
+..\Shahd_c_project.c:347:25: error: implicit declaration of function 'assert' [-Wimplicit-function-declaration]
+  347 |                         assert (new_student != NULL);
+      |                         ^~~~~~
+..\Shahd_c_project.c:3:1: note: 'assert' is defined in header '<assert.h>'; this is probably fixable by adding '#include <assert.h>'
+    2 | #include <stdlib.h>
+  +++ |+#include <assert.h>
+    3 | 
+12:39:29 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+12:53:36 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+..\Shahd_c_project.c: In function 'main':
+..\Shahd_c_project.c:347:37: error: expected ';' before 'struct'
+  347 |                         printf (" ")
+      |                                     ^
+      |                                     ;
+  348 |                         struct student *new_student = (struct student*) malloc (sizeof(struct student));
+      |                         ~~~~~~       
+In file included from ..\Shahd_c_project.c:3:
+..\Shahd_c_project.c:349:33: error: 'new_student' undeclared (first use in this function); did you mean 'student'?
+  349 |                         assert (new_student != NULL);
+      |                                 ^~~~~~~~~~~
+..\Shahd_c_project.c:349:33: note: each undeclared identifier is reported only once for each function it appears in
+12:53:43 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:07:01 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:07:42 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:08:06 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:09:53 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:10:25 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:11:10 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:12:10 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:12:56 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+13:13:30 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+13:13:32 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+13:13:38 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:16:29 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+13:16:34 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:16:56 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:20:02 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:21:22 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:22:14 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+09:07:24 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+..\Shahd_c_project.c: In function 'main':
+..\Shahd_c_project.c:352:93: error: conversion to non-scalar type requested
+  352 |                         struct student new_student = (struct student) malloc (sizeof(struct student));
+      |                                                                                             ^~~~~~~
+In file included from ..\Shahd_c_project.c:3:
+..\Shahd_c_project.c:353:45: error: invalid operands to binary != (have 'struct student' and 'void *')
+  353 |                         assert (new_student != NULL);
+      |                                             ^~
+..\Shahd_c_project.c:355:50: error: invalid type argument of '->' (have 'struct student')
+  355 |                         scanf ("%d", &new_student->id);
+      |                                                  ^~
+..\Shahd_c_project.c:358:42: error: invalid type argument of '->' (have 'struct student')
+  358 |                         gets (new_student->name);
+      |                                          ^~
+..\Shahd_c_project.c:360:50: error: invalid type argument of '->' (have 'struct student')
+  360 |                         scanf ("%d", &new_student->age);
+      |                                                  ^~
+..\Shahd_c_project.c:362:50: error: invalid type argument of '->' (have 'struct student')
+  362 |                         scanf ("%f", &new_student->gpa);
+      |                                                  ^~
+..\Shahd_c_project.c:363:36: error: incompatible type for argument 1 of 'addStudent'
+  363 |                         addStudent(new_student);
+      |                                    ^~~~~~~~~~~
+      |                                    |
+      |                                    struct student
+..\Shahd_c_project.c:45:46: note: expected 'const struct student * const' but argument is of type 'struct student'
+   45 | void addStudent (const struct student *const ptr)
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+..\Shahd_c_project.c:364:31: error: incompatible type for argument 1 of 'free'
+  364 |                         free (new_student);
+      |                               ^~~~~~~~~~~
+      |                               |
+      |                               struct student
+In file included from ..\Shahd_c_project.c:2:
+C:/MinGW/x86_64-w64-mingw32/include/stdlib.h:536:27: note: expected 'void *' but argument is of type 'struct student'
+  536 |   void __cdecl free(void *_Memory);
+      |                     ~~~~~~^~~~~~~
+09:07:49 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+..\Shahd_c_project.c: In function 'main':
+..\Shahd_c_project.c:352:93: error: conversion to non-scalar type requested
+  352 |                         struct student new_student = (struct student) malloc (sizeof(struct student));
+      |                                                                                             ^~~~~~~
+In file included from ..\Shahd_c_project.c:3:
+..\Shahd_c_project.c:353:45: error: invalid operands to binary != (have 'struct student' and 'void *')
+  353 |                         assert (new_student != NULL);
+      |                                             ^~
+..\Shahd_c_project.c:355:50: error: invalid type argument of '->' (have 'struct student')
+  355 |                         scanf ("%d", &new_student->id);
+      |                                                  ^~
+..\Shahd_c_project.c:358:42: error: invalid type argument of '->' (have 'struct student')
+  358 |                         gets (new_student->name);
+      |                                          ^~
+..\Shahd_c_project.c:360:50: error: invalid type argument of '->' (have 'struct student')
+  360 |                         scanf ("%d", &new_student->age);
+      |                                                  ^~
+..\Shahd_c_project.c:362:50: error: invalid type argument of '->' (have 'struct student')
+  362 |                         scanf ("%f", &new_student->gpa);
+      |                                                  ^~
+..\Shahd_c_project.c:363:36: error: incompatible type for argument 1 of 'addStudent'
+  363 |                         addStudent(new_student);
+      |                                    ^~~~~~~~~~~
+      |                                    |
+      |                                    struct student
+..\Shahd_c_project.c:45:46: note: expected 'const struct student * const' but argument is of type 'struct student'
+   45 | void addStudent (const struct student *const ptr)
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+..\Shahd_c_project.c:364:31: error: incompatible type for argument 1 of 'free'
+  364 |                         free (new_student);
+      |                               ^~~~~~~~~~~
+      |                               |
+      |                               struct student
+In file included from ..\Shahd_c_project.c:2:
+C:/MinGW/x86_64-w64-mingw32/include/stdlib.h:536:27: note: expected 'void *' but argument is of type 'struct student'
+  536 |   void __cdecl free(void *_Memory);
+      |                     ~~~~~~^~~~~~~
+09:08:10 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+19:34:59 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+19:38:33 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+19:38:41 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+19:39:35 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/14.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file Shahd_C_project.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+19:39:47 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+19:43:04 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+20:15:05 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+13:45:31 **** Incremental Build of configuration Debug for project Shahd_C_project ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o Shahd_c_project.o "..\\Shahd_c_project.c" 
+gcc -o Shahd_C_project.exe Shahd_c_project.o 
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
+Info: Nothing to build for Shahd_C_project
