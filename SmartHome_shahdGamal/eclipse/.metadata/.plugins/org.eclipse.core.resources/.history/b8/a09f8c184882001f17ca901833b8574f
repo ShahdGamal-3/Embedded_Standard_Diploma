@@ -1,0 +1,26 @@
+/*
+ * pwm.h
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#ifndef PWM_H_
+#define PWM_H_
+
+#include "std_types.h"
+
+#define FIRST_TEMP_RANGE         25
+#define SECOND_TEMP_RANGE        30
+#define THIRD_TEMP_RANGE         35
+#define FOURTH_TEMP_RANGE        40
+
+#define SET_100_DUTY_CYCLE       100
+#define SET_75_DUTY_CYCLE        75
+#define SET_50_DUTY_CYCLE        50
+#define SET_25_DUTY_CYCLE        25
+
+void PWM_Timer0_Start(uint8 duty_cycle);
+
+
+#endif /* PWM_H_ */

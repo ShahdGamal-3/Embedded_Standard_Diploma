@@ -1,0 +1,14 @@
+/*
+ * ldr_sensor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "adc.h"
+#include "ldr_sensor.h"
+
+uint16 LDR_getLightIntensity(void){
+
+	return ADC_readChannel(LDR_SENSOR_CHANNEL_ID);
+}

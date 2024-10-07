@@ -1,0 +1,14 @@
+/*
+ * main.h
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#ifndef MAIN_H_
+#define MAIN_H_
+
+#include FIRST_RANGE_OF_INTENSITY   15
+
+
+#endif /* MAIN_H_ */

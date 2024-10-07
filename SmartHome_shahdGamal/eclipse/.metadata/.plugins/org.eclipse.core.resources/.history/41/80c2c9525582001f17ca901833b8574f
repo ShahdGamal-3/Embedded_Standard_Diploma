@@ -1,0 +1,64 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "avr/io.h" /* To use the ADC Registers */
+#include "main.h"
+#include "ldr_sensor.h"
+#include "pwm.h"
+
+void LED_controlLighting(uint16_t light_intensity) {
+	if (light_intensity < FIRST_INTENSITY_RANGE) {
+		// Turn on all LEDs (Red, Green, Blue)
+		LED_on(RED);
+		LED_on(GREEN);
+		LED_on(BLUE);
+
+	} else if (light_intensity < SECOND_INTENSITY_RANGE) {
+		// Turn on Red and Green LEDs
+		LED_on(RED);
+		LED_on(GREEN);
+		LED_off(BLUE);
+
+	} else if (light_intensity < THIRD_INTENSITY_RANGE) {
+		// Turn on Red LED
+		LED_on(RED);
+		LED_off(GREEN);
+		LED_off(BLUE);
+
+	} else {
+		// Turn off all LEDs
+		LED_off(RED);
+		LED_off(GREEN);
+		LED_off(BLUE);
+	}
+}
+
+void PWM_adjustFanSpeed(uint16_t temperature) {
+    if (temperature >= FOURTH_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_100_DUTY_CYCLE); // 100% duty cycle
+
+    } else if (temperature >= THIRD_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_75_DUTY_CYCLE);  // 75% duty cycle
+
+    } else if (temperature >= SECOND_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_50_DUTY_CYCLE);  // 50% duty cycle
+
+    } else if (temperature >= FIRST_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_25_DUTY_CYCLE);  // 25% duty cycle
+
+    } else {
+        PWM_Timer0_Start(SET_0_DUTY_CYCLE);   // Fan OFF
+    }
+}
+
+
+int main (void){
+
+}
+
+
+

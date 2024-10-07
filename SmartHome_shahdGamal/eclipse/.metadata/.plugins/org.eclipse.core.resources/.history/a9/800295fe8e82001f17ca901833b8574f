@@ -1,0 +1,22 @@
+/*
+ * ldr_sensor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "ldr_sensor.h"
+#include "adc.h"
+
+uint16 LDR_getLightIntensity(void) {
+    uint16 adc_value = ADC_readChannel(LDR_SENSOR_CHANNEL_ID);
+
+    /*
+     * Calculate the light intensity percentage based on the ADC value.
+     * Since the ADC result ranges from 0 to 1023 (10-bit ADC),
+     * we map this range to 0% to 100% light intensity.
+     */
+    uint16 light_intensity = (uint32)adc_value * LDR_SENSOR_MAX_LIGHT_INTENSITY / 1023;
+
+    return light_intensity;
+}

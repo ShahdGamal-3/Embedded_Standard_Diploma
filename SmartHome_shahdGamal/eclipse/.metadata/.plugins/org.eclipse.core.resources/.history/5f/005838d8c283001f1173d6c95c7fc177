@@ -1,0 +1,29 @@
+/*
+ * app.h
+ *
+ *  Created on: Oct 6, 2024
+ *      Author: shahd
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include <avr/io.h> /* To use the ADC Registers */
+#include <util/delay.h>
+#include "lcd.h"
+#include "ldr_sensor.h"
+#include "pwm.h"
+#include "buzzer.h"
+#include "led.h"
+#include "dc_motor.h"
+#include "flame_sensor.h"
+#include "lm35_sensor.h"
+#include "adc.h"
+
+void LED_controlLighting(uint16 light_intensity);
+void PWM_adjustFanSpeed(uint16 temperature);
+void LCD_displayFanState(uint8 fan_state);
+void LCD_displayTemperature(uint16 temperature);
+void LCD_displayLight(uint16 light_intensity);
+
+#endif /* APP_H_ */

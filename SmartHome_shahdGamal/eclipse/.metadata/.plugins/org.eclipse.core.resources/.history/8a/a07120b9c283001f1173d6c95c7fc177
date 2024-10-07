@@ -1,0 +1,56 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "app.h"
+
+int main (void){
+
+// Initialize ADC, PWM, LCD, and set pin directions for LEDs and sensors
+	ADC_init();
+	LCD_init();
+	LEDS_init();
+	Buzzer_init();
+	DcMotor_Init();
+	FlameSensor_init();
+
+
+	PWM_Timer0_Start(0);  // Start PWM with fan OFF
+	DcMotor_Rotate(DC_MOTOR_CW,SET_0_DUTY_CYCLE);
+
+
+		while (1) {
+			// Read sensor values once per loop
+
+			// Adjust fan speed and control LEDs based on sensor values
+			PWM_adjustFanSpeed(LM35_getTemperature());              // Adjust fan speed
+			LED_controlLighting(LDR_getLightIntensity());         // Control LEDs
+
+			// Display values on the LCD
+			LCD_displayLight(LDR_getLightIntensity());            // Display light intensity on LCD
+			LCD_displayTemperature(LM35_getTemperature());          // Display temperature on LCD
+			LCD_displayFanState(LM35_getTemperature() >= 25);       // Display fan state based on temperature
+
+
+
+			while (FlameSensor_getValue()) {
+				Buzzer_on();
+				LCD_moveCursor(FIRST_ROW,FIRST_COLUMN);
+				LCD_displayString("Critical alert!");
+				LCD_moveCursor(FIRST_ROW+1,FIRST_COLUMN);
+				LCD_displayString("                ");
+
+			}
+			Buzzer_off();
+
+
+
+
+	}
+}
+
+
+

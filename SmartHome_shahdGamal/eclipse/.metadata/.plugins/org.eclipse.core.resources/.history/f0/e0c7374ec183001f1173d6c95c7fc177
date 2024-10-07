@@ -1,0 +1,17 @@
+/*
+ * app.h
+ *
+ *  Created on: Oct 6, 2024
+ *      Author: shahd
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+void LED_controlLighting(uint16 light_intensity);
+void PWM_adjustFanSpeed(uint16 temperature);
+void LCD_displayFanState(uint8 fan_state);
+void LCD_displayTemperature(uint16 temperature);
+void LCD_displayLight(uint16 light_intensity);
+
+#endif /* APP_H_ */

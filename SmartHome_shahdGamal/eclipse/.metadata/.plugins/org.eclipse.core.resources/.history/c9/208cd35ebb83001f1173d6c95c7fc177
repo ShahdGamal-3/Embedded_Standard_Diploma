@@ -1,0 +1,26 @@
+/*
+ * ldr_sensor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "ldr_sensor.h"
+#include "adc.h"  // Include the ADC driver to get ADC readings
+
+/*
+ * Description:
+ * Function responsible for reading the LDR sensor value using the ADC
+ * and converting it to a light intensity percentage (0% to 100%).
+ */
+uint16 LDR_getLightIntensity(void) {
+    /* Read the analog value from the LDR sensor */
+    uint16 adc_value = ADC_readChannel(LDR_SENSOR_CHANNEL_ID);
+
+    /* Calculate the light intensity as a percentage */
+
+    uint16 light_intensity = (uint16)(((uint32)adc_value*LDR_SENSOR_MAX_LIGHT_INTENSITY*ADC_REF_VOLT_VALUE)/(ADC_MAXIMUM_VALUE*LDR_SENSOR_MAX_VOLT_VALUE));
+
+    /* Return the light intensity as a percentage */
+    return light_intensity;
+}

@@ -1,0 +1,142 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include <avr/io.h> /* To use the ADC Registers */
+#include <util/delay.h>
+#include "lcd.h"
+#include "ldr_sensor.h"
+#include "pwm.h"
+#include "buzzer.h"
+#include "led.h"
+#include "dc_motor.h"
+#include "flame_sensor.h"
+#include "lm35_sensor.h"
+#include "adc.h"
+
+
+void LED_controlLighting(uint16 light_intensity) {
+	if (light_intensity < FIRST_INTENSITY_RANGE) {
+		// Turn on all LEDs (Red, Green, Blue)
+		LED_on(RED);
+		LED_on(GREEN);
+		LED_on(BLUE);
+
+	} else if (light_intensity < SECOND_INTENSITY_RANGE) {
+		// Turn on Red and Green LEDs
+		LED_on(RED);
+		LED_on(GREEN);
+		LED_off(BLUE);
+
+	} else if (light_intensity < THIRD_INTENSITY_RANGE) {
+		// Turn on Red LED
+		LED_on(RED);
+		LED_off(GREEN);
+		LED_off(BLUE);
+
+	} else {
+		// Turn off all LEDs
+		LED_off(RED);
+		LED_off(GREEN);
+		LED_off(BLUE);
+	}
+}
+
+void PWM_adjustFanSpeed(uint16 temperature) {
+    if (temperature >= FOURTH_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_100_DUTY_CYCLE); // 100% duty cycle
+
+    } else if (temperature >= THIRD_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_75_DUTY_CYCLE);  // 75% duty cycle
+
+    } else if (temperature >= SECOND_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_50_DUTY_CYCLE);  // 50% duty cycle
+
+    } else if (temperature >= FIRST_TEMP_RANGE) {
+        PWM_Timer0_Start(SET_25_DUTY_CYCLE);  // 25% duty cycle
+
+    } else {
+        PWM_Timer0_Start(SET_0_DUTY_CYCLE);   // Fan OFF
+    }
+}
+
+void LCD_displayFanState(uint8 fan_state) {
+	LCD_moveCursor(FIRST_ROW,FIRST_COLUMN+3); /* to display fan state at the center of first line */
+
+	// Display the fan state centered
+	if (fan_state) {
+		LCD_displayString("FAN is ON");
+		LCD_displayString("   ");
+	} else {
+		LCD_displayString("FAN is OFF");
+		LCD_displayString("   ");
+	}
+}
+
+void LCD_displayTemperature(uint16 temperature) {
+	//LCD_clearScreen();
+	LCD_moveCursor(FIRST_ROW+1,FIRST_COLUMN);
+    LCD_displayString("Temp=");
+    LCD_intgerToString(temperature);
+    LCD_displayString("C");
+}
+
+void LCD_displayLight(uint16 light_intensity) {
+	//LCD_clearScreen();
+	LCD_moveCursor(FIRST_ROW+1,FIRST_COLUMN+9);
+    LCD_displayString("LDR=");
+    LCD_intgerToString(light_intensity);
+    LCD_displayString("%");
+    LCD_displayString("  ");
+}
+
+
+int main (void){
+
+// Initialize ADC, PWM, LCD, and set pin directions for LEDs and sensors
+	ADC_init();
+	LCD_init();
+	LEDS_init();
+	Buzzer_init();
+	DcMotor_Init();
+	FlameSensor_init();
+
+
+	PWM_Timer0_Start(0);  // Start PWM with fan OFF
+	DcMotor_Rotate(DC_MOTOR_CW,SET_0_DUTY_CYCLE);
+
+	uint16 temperature, light_intensity;
+
+		while (1) {
+			// Read sensor values once per loop
+			temperature = LM35_getTemperature();           // Get temperature
+			light_intensity = LDR_getLightIntensity();     // Get light intensity
+
+			// Adjust fan speed and control LEDs based on sensor values
+			PWM_adjustFanSpeed(temperature);              // Adjust fan speed
+			LED_controlLighting(light_intensity);         // Control LEDs
+
+			// Display values on the LCD
+			LCD_displayLight(light_intensity);            // Display light intensity on LCD
+			LCD_displayTemperature(temperature);          // Display temperature on LCD
+			LCD_displayFanState(temperature >= 25);       // Display fan state based on temperature
+
+
+
+			while (FlameSensor_getValue()) {
+				Buzzer_on();
+				LCD_clearScreen();
+				LCD_displayString("Critical alert!");
+			}
+			Buzzer_off();
+
+
+
+	}
+}
+
+
+

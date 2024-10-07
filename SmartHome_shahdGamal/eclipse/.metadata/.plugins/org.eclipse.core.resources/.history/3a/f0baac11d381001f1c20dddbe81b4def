@@ -1,0 +1,18 @@
+/*
+ * motor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "avr/io.h" /* To use the ADC Registers */
+#include "motor.h"
+#include "common_macros.h" /* To use the macros like SET_BIT */
+#include "gpio.h"
+
+void DcMotor_Init(void)
+{
+	GPIO_setupPinDirection(PORTB_ID,PIN0_ID,PIN_OUTPUT); //set IN1 as output pin
+	GPIO_setupPinDirection(PORTB_ID,PIN1_ID,PIN_OUTPUT); //set IN2 as output pin
+
+}

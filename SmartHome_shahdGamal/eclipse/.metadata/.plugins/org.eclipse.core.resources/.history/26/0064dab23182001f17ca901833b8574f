@@ -1,0 +1,14 @@
+/*
+ * flame_sensor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "adc.h"
+#include "flame_sensor.h"
+
+void FlameSensor_init(void){
+	GPIO_setupPinDirection(FLAME_SENSOR_PORT_ID,FLAME_SENSOR_PIN_ID,)
+}
+uint8 FlameSensor_getValue(void);

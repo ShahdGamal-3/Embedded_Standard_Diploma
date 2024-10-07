@@ -1,0 +1,41 @@
+/*
+ * dc_motor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "dc_motor.h"
+#include "avr/io.h" /* To use the ADC Registers */
+#include "common_macros.h" /* To use the macros like SET_BIT */
+#include "gpio.h"
+#include "pwm.h"
+
+void DcMotor_Init(void)
+{
+	GPIO_setupPinDirection(DC_MOTOR_IN1_PORT_ID,DC_MOTOR_IN1_PIN_ID,PIN_OUTPUT); /* set IN1 as output pin */
+	GPIO_setupPinDirection(DC_MOTOR_IN2_PORT_ID,DC_MOTOR_IN2_PIN_ID,PIN_OUTPUT); /* set IN2 as output pin */
+	GPIO_setupPinDirection(DC_MOTOR_E_PORT_ID,DC_MOTOR_E_PIN_ID,PIN_INPUT); /* set enable of H-bridge as input pin */
+	CLEAR_BIT(PORTB,PB0); /* stop motor at beginning */
+	CLEAR_BIT(PORTB,PB1); /* stop motor at beginning */
+}
+
+void DcMotor_Rotate(DcMotor_State state, uint8 speed)
+{
+	PWM_Timer0_Start(speed);  /* Adjust PWM duty cycle for speed control */
+	switch (state) {
+		case DC_MOTOR_CW:
+			SET_BIT(PORTB,PB0);
+			CLEAR_BIT(PORTB,PB1);
+			break;
+		case DC_MOTOR_ACW:
+			SET_BIT(PORTB,PB1);
+			CLEAR_BIT(PORTB,PB0);
+			break;
+		case DC_MOTOR_STOP:
+		default:
+			CLEAR_BIT(PORTB,PB0);
+			CLEAR_BIT(PORTB,PB1);
+			break;
+	}
+}

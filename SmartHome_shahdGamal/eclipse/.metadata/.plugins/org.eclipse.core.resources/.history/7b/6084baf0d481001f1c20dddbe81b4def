@@ -1,0 +1,26 @@
+/*
+ * motor.c
+ *
+ *  Created on: Oct 4, 2024
+ *      Author: shahd
+ */
+
+#include "dc_motor.h"
+
+#include "avr/io.h" /* To use the ADC Registers */
+#include "common_macros.h" /* To use the macros like SET_BIT */
+#include "gpio.h"
+
+void DcMotor_Init(void)
+{
+	GPIO_setupPinDirection(MOTOR_IN1_PORT_ID,MOTOR_IN1_PIN_ID,PIN_OUTPUT); /* set IN1 as output pin */
+	GPIO_setupPinDirection(MOTOR_IN2_PORT_ID,MOTOR_IN2_PIN_ID,PIN_OUTPUT); /* set IN2 as output pin */
+	GPIO_setupPinDirection(MOTOR_E_PORT_ID,MOTOR_E_PIN_ID,PIN_INPUT); /* set enable of H-bridge as input pin */
+	CLEAR_BIT(PORTB,0); /* stop motor at beginning */
+	CLEAR_BIT(PORTB,1); /* stop motor at beginning */
+}
+
+void DcMotor_Rotate(DcMotor_State state, uint8 speed)
+{
+
+}
