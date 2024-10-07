@@ -1,0 +1,80 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 6, 2024
+ *      Author: shahd
+ */
+
+#include "lcd.h"
+#include "keypad.h"
+#include <util/delay.h> /* For the delay functions */
+#include <stdint.h>     /* For uint16_t */
+
+void LCD_displayResult(uint16_t first_number, uint16_t second_number, char sign) {
+    uint16_t result = 0;
+
+    switch (sign) {
+        case '+':
+            result = first_number + second_number;
+            break;
+        case '-':
+            result = first_number - second_number;
+            break;
+        case '*':
+            result = first_number * second_number;
+            break;
+        case '/':
+            if (second_number != 0) {
+                result = first_number / second_number;
+            } else {
+                LCD_displayString("Error: Div by 0");
+                return; // Early return to avoid displaying the result
+            }
+            break;
+        default:
+            return;
+    }
+
+    LCD_intgerToString(result);
+}
+
+int main(void) {
+    unsigned char key;
+    uint16_t first_number = 0, second_number = 0;
+    char operator = 0;
+    int stage = 0; // 0: first number, 1: operator, 2: second number
+    LCD_init();
+
+    LCD_displayStringRowColumn(0, 1, "Calculator ON");
+    LCD_clearScreen();
+
+    LCD_moveCursor(1, 0); // Move the cursor to the second row
+
+    while (1) {
+        key = KEYPAD_getPressedKey();
+
+        if (key >= '0' && key <= '9') {
+            // Convert character to integer and accumulate
+            if (stage == 0) {
+                first_number = first_number * 10 + (key - '0');
+                LCD_intgerToString(first_number);
+            } else if (stage == 2) {
+                second_number = second_number * 10 + (key - '0');
+                LCD_intgerToString(second_number);
+            }
+        } else if (key == '+' || key == '-' || key == '*' || key == '/') {
+            operator = key;
+            stage = 1; // Move to the operator stage
+            LCD_displayCharacter(operator);
+        } else if (key == '=') {
+            // Calculate and display the result
+            LCD_displayResult(first_number, second_number, operator);
+            _delay_ms(2000); // Display result for 2 seconds
+            LCD_clearScreen();
+            first_number = second_number = 0; // Reset for next calculation
+            stage = 0; // Start again
+        }
+
+        _delay_ms(200); // Debounce delay for the keypad
+    }
+}
