@@ -15,7 +15,7 @@ void PWM_Init (void)
 {
 	 TCNT0 = 0;  // Set Timer Initial Value to 0
 
-	// Set initial compare value for the duty cycle
+	// Calculate and set the Compare value for the duty cycle
 	OCR0 = 0;
 
 	// Configure PB3/OC0 as output pin for PWM signal

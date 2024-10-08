@@ -24,7 +24,6 @@ int main(void) {
     Buzzer_init();       // Initialize the buzzer for alert notifications
     DcMotor_Init();      // Initialize the DC motor driver
     FlameSensor_init();  // Initialize the flame sensor for fire detection
-    PWM_Init ();         // Initialize the PWM signal
 
     // Start PWM with the fan turned off initially
     PWM_Timer0_Start(0);
