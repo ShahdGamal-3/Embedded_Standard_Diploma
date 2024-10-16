@@ -1,0 +1,72 @@
+/******************************************************************************
+ * Module: LED
+ * File Name: led.c
+ * Author: Shahd Gamal
+ *******************************************************************************/
+
+#include "gpio.h"          /* To control the GPIO pins */
+#include "led.h"           /* To use the LED module APIs */
+
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
+
+void LEDS_init(const LED_ConfigType * LED_Config_Ptr)
+{
+    /* Set Red, Green, and Blue LED pins as output */
+    GPIO_setupPinDirection(LED_Config_Ptr->LED_port, LED_Config_Ptr->LED_pin, PIN_OUTPUT);
+}
+
+void LED_on(const LED_ConfigType * LED_Config_Ptr)
+{
+    /* If the LEDs are configured as positive logic (HIGH = ON) */
+	GPIO_writePin(LED_Config_Ptr->LED_port, LED_Config_Ptr->LED_pin, LED_Config_Ptr->LED_logic);
+    }
+
+#elif (LED_CONFIGURATION == NEGATIVE_LOGIC)
+    /* If the LEDs are configured as negative logic (LOW = ON) */
+    switch (id) {
+        case RED:
+            GPIO_writePin(RED_LED_PORT_ID, RED_LED_PIN_ID, LOGIC_LOW);
+            break;
+        case GREEN:
+            GPIO_writePin(GREEN_LED_PORT_ID, GREEN_LED_PIN_ID, LOGIC_LOW);
+            break;
+        case BLUE:
+            GPIO_writePin(BLUE_LED_PORT_ID, BLUE_LED_PIN_ID, LOGIC_LOW);
+            break;
+    }
+#endif
+}
+
+void LED_off(LED_ID id)
+{
+#if (LED_CONFIGURATION == POSITIVE_LOGIC)
+    /* If the LEDs are configured as positive logic (LOW = OFF) */
+    switch (id) {
+        case RED:
+            GPIO_writePin(RED_LED_PORT_ID, RED_LED_PIN_ID, LOGIC_LOW);
+            break;
+        case GREEN:
+            GPIO_writePin(GREEN_LED_PORT_ID, GREEN_LED_PIN_ID, LOGIC_LOW);
+            break;
+        case BLUE:
+            GPIO_writePin(BLUE_LED_PORT_ID, BLUE_LED_PIN_ID, LOGIC_LOW);
+            break;
+    }
+
+#elif (LED_CONFIGURATION == NEGATIVE_LOGIC)
+    /* If the LEDs are configured as negative logic (HIGH = OFF) */
+    switch (id) {
+        case RED:
+            GPIO_writePin(RED_LED_PORT_ID, RED_LED_PIN_ID, LOGIC_HIGH);
+            break;
+        case GREEN:
+            GPIO_writePin(GREEN_LED_PORT_ID, GREEN_LED_PIN_ID, LOGIC_HIGH);
+            break;
+        case BLUE:
+            GPIO_writePin(BLUE_LED_PORT_ID, BLUE_LED_PIN_ID, LOGIC_HIGH);
+            break;
+    }
+#endif
+}

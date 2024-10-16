@@ -1,0 +1,29 @@
+/******************************************************************************
+ * Module: Buzzer
+ * File Name: buzzer.c
+ * Author: Shahd Gamal
+ *******************************************************************************/
+
+#include "buzzer.h"
+#include "gpio.h"
+
+//BUZZER_ConfigType g_BUZZER_configrations = {.BUZZER_port = PORTC_ID, .BUZZER_pin = PIN5_ID};
+
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
+
+void Buzzer_init(const BUZZER_ConfigType * BUZZER_Config_Ptr){
+    /* Configure the buzzer pin as output */
+    GPIO_setupPinDirection(BUZZER_Config_Ptr->BUZZER_port, BUZZER_Config_Ptr->BUZZER_pin, PIN_OUTPUT);
+}
+
+void Buzzer_on(const BUZZER_ConfigType * BUZZER_Config_Ptr){
+    /* Set the buzzer pin to high to turn on the buzzer */
+    GPIO_writePin(BUZZER_Config_Ptr->BUZZER_port, BUZZER_Config_Ptr->BUZZER_pin, LOGIC_HIGH);
+}
+
+void Buzzer_off(const BUZZER_ConfigType * BUZZER_Config_Ptr){
+    /* Set the buzzer pin to low to turn off the buzzer */
+    GPIO_writePin(BUZZER_Config_Ptr->BUZZER_port, BUZZER_Config_Ptr->BUZZER_pin, LOGIC_LOW);
+}

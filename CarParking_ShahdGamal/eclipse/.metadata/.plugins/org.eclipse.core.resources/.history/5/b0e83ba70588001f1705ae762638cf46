@@ -1,0 +1,59 @@
+/*
+ * ultrasonic_sensor.c
+ *
+ *  Created on: Oct 11, 2024
+ *      Author: shahd
+ */
+
+#include <util/delay.h>
+#include "ultrasonic_sensor.h"
+#include "icu.h"
+
+uint16 g_timePulse = 0;
+uint8  g_edgeCount = 0;
+
+Ultrasonic_ConfigType Ultrasonic_configrations =
+  {.Ultrasonic_trigger_port = PORTD_ID, .Ultrasonic_trigger_pin = PIN7_ID,
+   .Ultrasonic_echo_port = PORTD_ID, .Ultrasonic_echo_pin = PIN6_ID};
+
+void Ultrasonic_init(const Ultrasonic_ConfigType * Ultrasonic_Config_ptr)
+{
+	ICU_init(&ICU_configrations);
+	ICU_setCallBack(Ultrasonic_edgeProcessing);
+	GPIO_setupPinDirection(Ultrasonic_Config_ptr->Ultrasonic_trigger_port,
+			               Ultrasonic_Config_ptr->Ultrasonic_trigger_pin, PIN_OUTPUT);
+}
+
+void Ultrasonic_Trigger(const Ultrasonic_ConfigType * Ultrasonic_Config_ptr)
+{
+	GPIO_writePin(Ultrasonic_Config_ptr->Ultrasonic_trigger_port,
+			      Ultrasonic_Config_ptr->Ultrasonic_trigger_pin, LOGIC_HIGH);
+	_delay_us(10);
+	GPIO_writePin(Ultrasonic_Config_ptr->Ultrasonic_trigger_port,
+			      Ultrasonic_Config_ptr->Ultrasonic_trigger_pin, LOGIC_LOW);
+}
+
+uint16 Ultrasonic_readDistance(void)
+{
+	Ultrasonic_Trigger(&Ultrasonic_configrations);
+	uint16 distance = (uint16)(g_timePulse / 117.6);
+	return distance;
+}
+
+void Ultrasonic_edgeProcessing(void)
+{
+	g_edgeCount++;
+	switch(g_edgeCount)
+	{
+	case 1:
+		ICU_clearTimerValue();
+		ICU_setEdgeDetectionType(FALLING);
+		break;
+	case 2:
+		g_timePulse = ICU_getInputCaptureValue();
+		ICU_clearTimerValue();
+		ICU_setEdgeDetectionType(RAISING);
+		g_edgeCount= 0;
+		break;
+	}
+}

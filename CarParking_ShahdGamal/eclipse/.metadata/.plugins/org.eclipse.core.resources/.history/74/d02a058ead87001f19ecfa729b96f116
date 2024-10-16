@@ -1,0 +1,23 @@
+/*
+ * ultrasonic_sensor.c
+ *
+ *  Created on: Oct 11, 2024
+ *      Author: shahd
+ */
+
+#include "ultrasonic_sensor.h"
+
+ICU_ConfigType ICU_configrations = {F_CPU_8,RAISING};
+
+void Ultrasonic_init(const Ultrasonic_ConfigType * Ultrasonic_Config_ptr)
+{
+	ICU_init(&ICU_configrations);
+	ICU_setCallBack(Ultrasonic_edgeProcessing);
+	GPIO_setupPinDirection(Ultrasonic_Config_ptr->Ultrasonic_trigger_port,
+			               Ultrasonic_Config_ptr->Ultrasonic_trigger_pin, PIN_OUTPUT);
+}
+
+void Ultrasonic_Trigger(void)
+{
+
+}

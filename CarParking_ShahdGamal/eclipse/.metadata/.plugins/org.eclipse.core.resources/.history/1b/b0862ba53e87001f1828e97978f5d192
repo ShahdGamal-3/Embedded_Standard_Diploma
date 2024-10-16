@@ -1,0 +1,31 @@
+/*
+ * app.h
+ *
+ *  Created on: Oct 10, 2024
+ *      Author: shahd
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include "led.h"
+#include "gpio.h"
+
+/*******************************************************************************
+ *                              Global Variables                                *
+ *******************************************************************************/
+
+/* Global instances of LEDs with their configurations */
+LED_ConfigType g_ledRed =
+  { .port = PORTB_ID, .pin = PIN5_ID, .ledLogic = LED_POSITIVE_LOGIC };  /* Red LED configuration */
+
+LED_ConfigType g_ledGreen =
+  { .port = PORTB_ID, .pin = PIN6_ID, .ledLogic = LED_POSITIVE_LOGIC };  /* Green LED configuration */
+
+LED_ConfigType g_ledBlue =
+  { .port = PORTB_ID, .pin = PIN7_ID, .ledLogic = LED_POSITIVE_LOGIC };   /* Blue LED configuration */
+
+
+
+
+#endif /* APP_H_ */

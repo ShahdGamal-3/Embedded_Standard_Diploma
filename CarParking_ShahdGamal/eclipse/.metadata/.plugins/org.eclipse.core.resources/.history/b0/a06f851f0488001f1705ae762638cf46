@@ -1,0 +1,30 @@
+/******************************************************************************
+ * Module: LED
+ * File Name: led.c
+ * Author: Shahd Gamal
+ *******************************************************************************/
+
+#include "gpio.h"          /* To control the GPIO pins */
+#include "led.h"           /* To use the LED module APIs */
+
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
+
+void LEDS_init(const LED_ConfigType * LED_Config_Ptr)
+{
+    /* Set Red, Green, and Blue LED pins as output */
+    GPIO_setupPinDirection(LED_Config_Ptr->LED_port, LED_Config_Ptr->LED_pin, PIN_OUTPUT);
+}
+
+void LED_on(const LED_ConfigType * LED_Config_Ptr)
+{
+    /* If the LEDs are configured as positive logic (HIGH = ON) */
+	GPIO_writePin(LED_Config_Ptr->LED_port, LED_Config_Ptr->LED_pin, LED_Config_Ptr->LED_logic);
+}
+
+void LED_off(const LED_ConfigType * LED_Config_Ptr)
+{
+    /* If the LEDs are configured as positive logic (LOW = OFF) */
+	GPIO_writePin(LED_Config_Ptr->LED_port, LED_Config_Ptr->LED_pin, LED_Config_Ptr->LED_logic);
+}

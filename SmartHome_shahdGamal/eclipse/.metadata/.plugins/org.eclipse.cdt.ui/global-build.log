@@ -2799,3 +2799,37 @@ Data:        346 bytes (16.9% Full)
 
 Finished building: sizedummy
  
+08:34:21 **** Incremental Build of configuration Debug for project SmartHome ****
+make all 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega32 SmartHome.elf
+AVR Memory Usage
+----------------
+Device: atmega32
+
+Program:   10346 bytes (31.6% Full)
+(.text + .data + .bootloader)
+
+Data:        346 bytes (16.9% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+16:26:22 **** Incremental Build of configuration Debug for project SmartHome ****
+make all 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega32 SmartHome.elf
+AVR Memory Usage
+----------------
+Device: atmega32
+
+Program:   10346 bytes (31.6% Full)
+(.text + .data + .bootloader)
+
+Data:        346 bytes (16.9% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 

@@ -1,0 +1,28 @@
+/*
+ * ultrasonic_sensor.h
+ *
+ *  Created on: Oct 11, 2024
+ *      Author: shahd
+ */
+
+#ifndef ULTRASONIC_SENSOR_H_
+#define ULTRASONIC_SENSOR_H_
+
+#include "std_types.h"
+
+
+/* Ultrasonic Configuration Structure */
+typedef struct {
+	uint8 Ultrasonic_trigger_port:2;
+	uint8 Ultrasonic_trigger_pin:4;
+	uint8 Ultrasonic_echo_port:2;
+	uint8 Ultrasonic_echo_pin:4;
+} Ultrasonic_ConfigType;
+
+void Ultrasonic_init(const Ultrasonic_ConfigType * Ultrasonic_Config_ptr);
+void Ultrasonic_Trigger(void);
+uint16 Ultrasonic_readDistance(void);
+void Ultrasonic_edgeProcessing(void);
+
+
+#endif /* ULTRASONIC_SENSOR_H_ */

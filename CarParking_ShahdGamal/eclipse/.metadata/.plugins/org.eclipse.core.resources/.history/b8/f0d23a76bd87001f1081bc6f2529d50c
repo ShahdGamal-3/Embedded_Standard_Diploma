@@ -1,0 +1,117 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 11, 2024
+ *      Author: shahd
+ */
+
+#include "avr/io.h"
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include "lcd.h"
+#include "ultrasonic_sensor.h"
+#include "led.h"
+#include "buzzer.h"
+#include "gpio.h"
+#include "app.h"
+
+int main(void)
+{
+	uint16 distance = 0;
+
+	LCD_init();
+	Ultrasonic_init(&Ultrasonic_configrations);
+	LEDS_init(&LED_red_configrations);
+	LEDS_init(&LED_green_configrations);
+	LEDS_init(&LED_blue_configrations);
+
+	Buzzer_Init();
+
+	sei();
+
+	/*Display the initial message on LCD*/
+	LCD_moveCursor(0, 0);
+	LCD_displayString("Distance=    CM");
+
+	while(1)
+	{
+		/* Read the distance from the Ultrasonic sensor */
+		distance = Ultrasonic_readDistance();
+
+		/* Display the distance on the LCD */
+		LCD_moveCursor(0, 9);
+		LCD_intgerToString(distance);
+		LCD_displayString("  ");
+
+		/* Control LEDs and Buzzer based on the distance */
+		if (distance <= 5)
+		{
+			Buzzer_ON();
+
+			/* Flash all LEDs */
+			LED_on(LED_RED);
+			LED_on(LED_GRN);
+			LED_on(LED_BLU);
+			_delay_ms(200);
+			LED_off(LED_RED);
+			LED_off(LED_GRN);
+			LED_off(LED_BLU);
+			_delay_ms(200);
+
+			/*Display "Stop"*/
+			LCD_moveCursor(1, 5);
+			LCD_displayString("STOP!");
+		}
+		else if (distance <= 10)
+		{
+			Buzzer_OFF();
+
+			LED_on(LED_RED);
+			LED_on(LED_GRN);
+			LED_on(LED_BLU);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+		else if (distance <= 15)
+		{
+			Buzzer_OFF();
+
+			LED_on(LED_RED);
+			LED_on(LED_GRN);
+			LED_off(LED_BLU);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+		else if (distance <= 20)
+		{
+			Buzzer_OFF();
+
+			LED_on(LED_RED);
+			LED_off(LED_GRN);
+			LED_off(LED_BLU);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+		else
+		{
+			Buzzer_OFF();
+			LED_off(LED_RED);
+			LED_off(LED_GRN);
+			LED_off(LED_BLU);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+
+	}
+
+	return 0;
+}
+

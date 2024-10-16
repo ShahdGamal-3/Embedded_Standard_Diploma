@@ -1,0 +1,38 @@
+/*
+ * app.h
+ *
+ *  Created on: Oct 10, 2024
+ *      Author: shahd
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include "gpio.h"
+#include "led.h"
+#include "buzzer.h"
+
+/*******************************************************************************
+ *                              Global Variables                                *
+ *******************************************************************************/
+
+/* Global instances of LEDs with their configurations */
+LED_ConfigType LED_red_configrations =
+  {PORTC_ID, PIN0_ID, LED_POSITIVE_LOGIC };  /* Red LED configuration */
+
+LED_ConfigType LED_green_configrations =
+  {PORTC_ID, PIN1_ID, LED_POSITIVE_LOGIC };  /* Green LED configuration */
+
+LED_ConfigType LED_blue_configrations =
+  {PORTC_ID, PIN2_ID, LED_POSITIVE_LOGIC };   /* Blue LED configuration */
+
+/* Global instance of the Buzzer configuration */
+BUZZER_ConfigType BUZZER_configrations = {PORTC_ID, PIN5_ID};
+
+ICU_ConfigType ICU_configrations = {F_CPU_8, RAISING};
+
+Ultrasonic_ConfigType Ultrasonic_configrations = {PORTD_ID,PIN6_ID,PORTD_ID,PIN7_ID};
+
+
+
+#endif /* APP_H_ */

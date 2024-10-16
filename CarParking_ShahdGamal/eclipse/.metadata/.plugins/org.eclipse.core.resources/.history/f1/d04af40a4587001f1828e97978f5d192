@@ -1,0 +1,36 @@
+/*
+ * app.h
+ *
+ *  Created on: Oct 10, 2024
+ *      Author: shahd
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include "gpio.h"
+#include "led.h"
+#include "buzzer.h"
+
+/*******************************************************************************
+ *                              Global Variables                                *
+ *******************************************************************************/
+
+/* Global instances of LEDs with their configurations */
+LED_ConfigType g_Redled =
+  {PORTB_ID, PIN5_ID, LED_POSITIVE_LOGIC };  /* Red LED configuration */
+
+LED_ConfigType g_Greenled =
+  {PORTB_ID, PIN6_ID, LED_POSITIVE_LOGIC };  /* Green LED configuration */
+
+LED_ConfigType g_Blueled =
+  {PORTB_ID, PIN7_ID, LED_POSITIVE_LOGIC };   /* Blue LED configuration */
+/*******************************************************************************/
+
+/* Global instance of the Buzzer configuration */
+BUZZER_ConfigType g_buzzer = {PORTD_ID, PIN3_ID};
+
+
+
+
+#endif /* APP_H_ */

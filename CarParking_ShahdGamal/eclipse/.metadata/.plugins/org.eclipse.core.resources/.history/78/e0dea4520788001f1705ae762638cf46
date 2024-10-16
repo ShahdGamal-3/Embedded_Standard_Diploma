@@ -1,0 +1,113 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 11, 2024
+ *      Author: shahd
+ */
+
+#include "avr/io.h"
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include "lcd.h"
+#include "ultrasonic_sensor.h"
+#include "led.h"
+#include "buzzer.h"
+#include "icu.h"
+#include "gpio.h"
+
+int main(void)
+{
+	uint16 distance = 0;
+
+	LCD_init();
+	Ultrasonic_init(&g_Ultrasonic_configrations);
+	Buzzer_init(&BUZZER_configrations);
+	Buzzer_off(&BUZZER_configrations);
+	LEDS_init(&g_LED_red_configrations);
+	LEDS_init(&g_LED_green_configrations);
+	LEDS_init(&g_LED_blue_configrations);
+
+	sei();
+
+	/*Display the initial message on LCD*/
+	LCD_moveCursor(0,0);
+	LCD_displayString("Distance=    CM");
+
+	while(1)
+	{
+		/* Read the distance from the Ultrasonic sensor */
+		distance = Ultrasonic_readDistance();
+
+		/* Display the distance on the LCD */
+		LCD_moveCursor(0,9);
+		LCD_intgerToString(distance);
+		LCD_displayString("  ");
+
+		/* Control LEDs and Buzzer based on the distance */
+		if (distance <= 5)
+		{
+			Buzzer_on(&BUZZER_configrations);
+
+			/* Flash all LEDs */
+			LED_on(&LED_red_configrations);
+			LED_on(&LED_green_configrations);
+			LED_on(&LED_blue_configrations);
+
+			/*Display "Stop"*/
+			LCD_moveCursor(1,5);
+			LCD_displayString("STOP!");
+		}
+		else if (distance <= 10)
+		{
+			Buzzer_off(&BUZZER_configrations);
+
+			/* Flash all LEDs */
+			LED_on(&LED_red_configrations);
+			LED_on(&LED_green_configrations);
+			LED_on(&LED_blue_configrations);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1,5);
+			LCD_displayString("     ");
+		}
+		else if (distance <= 15)
+		{
+			Buzzer_off(&BUZZER_configrations);
+
+			LED_on(&LED_red_configrations);
+			LED_on(&LED_green_configrations);
+			LED_off(&LED_blue_configrations);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+		else if (distance <= 20)
+		{
+			Buzzer_off(&BUZZER_configrations);
+
+			LED_on(&LED_red_configrations);
+			LED_off(&LED_green_configrations);
+			LED_off(&LED_blue_configrations);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+		else
+		{
+			Buzzer_off(&BUZZER_configrations);
+			LED_off(&LED_red_configrations);
+			LED_off(&LED_green_configrations);
+			LED_off(&LED_blue_configrations);
+
+			/* Clear the "Stop" message */
+			LCD_moveCursor(1, 5);
+			LCD_displayString("     ");
+		}
+
+	}
+
+	return 0;
+}
+
