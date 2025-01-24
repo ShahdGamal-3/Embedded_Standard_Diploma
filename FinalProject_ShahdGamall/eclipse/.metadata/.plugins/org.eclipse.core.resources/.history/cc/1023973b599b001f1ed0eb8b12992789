@@ -1,0 +1,53 @@
+/*******************************************************************************
+ *
+ * Module: Main Control Unit (Control_ECU)
+ *
+ * File Name: control_main.c
+ *
+ * Description: Main program for Control_ECU in a dual microcontroller door
+ *              locking system without FreeRTOS.
+ *
+ * Created on: Oct 24, 2024
+ *
+ *******************************************************************************/
+
+#include "uart.h"
+#include "external_eeprom.h"
+#include "dc_motor.h"
+#include "pir_sensor.h"
+#include "timer.h"
+#include "buzzer.h"
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define PASS_LENGTH 5
+
+uint8 pass[PASS_LENGTH];
+uint8 pass2[PASS_LENGTH];
+uint8 receive;
+uint8 i;
+
+int main(void)
+{
+	UART_ConfigType uart = {
+			.baud_rate = 9600,
+			.parity_mode = PARITY_DISABLE,
+			.stopbit_mode = ONE_BIT,
+			.data_mode = EIGHT_BIT
+	};
+
+	UART_init(&uart);
+
+	UART_receiveString(pass, PASS_LENGTH);
+
+	UART_receiveString(pass2, PASS_LENGTH);
+
+	for(i = 0; i<PASS_LENGTH; i++){
+
+	}
+
+	while(1);
+
+	return 0;
+
+}

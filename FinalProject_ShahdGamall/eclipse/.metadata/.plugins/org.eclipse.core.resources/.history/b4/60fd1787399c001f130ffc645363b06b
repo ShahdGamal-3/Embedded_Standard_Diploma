@@ -1,0 +1,29 @@
+/*
+ * PIRsensor.c
+ *
+ *  Created on: ٣١‏/١٠‏/٢٠٢٤
+ *      Author: shahd
+ */
+
+#include "pir_sensor.h"
+
+#include <avr/io.h>
+#include "gpio.h"
+#include "common_macros.h"
+
+PIR_t g_pir1 = { .port = PORTC_ID, .pin = PIN2_ID };
+
+void PIR_init(PIR_t pir) {
+    /* Set the PIR sensor pin as input */
+    GPIO_setupPinDirection(pir.port, pir.pin, PIN_INPUT);
+}
+
+uint8 PIR_getState(PIR_t pir) {
+    /* Check if the PIR sensor pin is HIGH (motion detected) */
+    if (LOGIC_HIGH == GPIO_readPin(pir.port, pir.pin)) {
+        return PIR_STATE_MOTION;
+    } else {
+        return PIR_STATE_NO_MOTION;
+    }
+}
+

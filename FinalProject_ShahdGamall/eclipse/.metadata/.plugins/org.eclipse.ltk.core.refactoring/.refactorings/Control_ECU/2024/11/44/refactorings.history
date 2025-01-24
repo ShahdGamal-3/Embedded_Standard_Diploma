@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;Control_ECU/PIRsensor.c&apos; to &apos;pir_sensor.c&apos;" description="Rename resource &apos;PIRsensor.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="PIRsensor.c" name="pir_sensor.c" stamp="1730457072306" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;Control_ECU/PIRsensor.h&apos; to &apos;pir_sensor.h&apos;" description="Rename resource &apos;PIRsensor.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="PIRsensor.h" name="pir_sensor.h" stamp="1730457082207" updateReferences="true"/>
+</session>

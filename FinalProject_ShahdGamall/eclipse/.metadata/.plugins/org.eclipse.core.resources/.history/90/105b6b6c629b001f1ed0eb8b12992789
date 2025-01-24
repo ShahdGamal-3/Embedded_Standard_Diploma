@@ -1,0 +1,96 @@
+/*
+ * HMI_main.c
+ *
+ *  Created on: Nov 1, 2024
+ *      Author: shahd
+ */
+
+#include "uart.h"
+#include "LCD.h"
+#include "Keypad.h"
+#include <util/delay.h>
+
+#define PASS_CORRECT 0x00
+#define PASS_WRONG 0x01
+
+#define OPEN_DOOR	'+'
+#define CHANGE_PASS	'-'
+
+#define PASS_LENGTH 5
+
+uint8 pass[PASS_LENGTH];
+uint8 receiveData;
+uint8 i = 0;
+
+int main(void) {
+	LCD_init();
+
+	UART_ConfigType uart = { .baud_rate = 9600, .parity_mode = PARITY_DISABLE,
+			.stopbit_mode = ONE_BIT, .data_mode = EIGHT_BIT };
+
+	UART_init(&uart);
+
+	receiveData = PASS_WRONG;
+	while (receiveData == PASS_WRONG) {
+
+		LCD_clearScreen();
+		LCD_displayString("Plz Enter Pass:");
+		LCD_moveCursor(1, 0);
+
+		for (i = 0; i < PASS_LENGTH; ++i) {
+			do {
+				pass[i] = KEYPAD_getPressedKey();
+			} while (!(pass[i] >= 0 && pass[i] <= 9));
+
+			LCD_displayCharacter('*');
+			_delay_ms(500);
+		}
+
+		while (KEYPAD_getPressedKey() != '=')
+			;
+
+		_delay_ms(500);
+
+		UART_sendString(pass, PASS_LENGTH);
+
+		LCD_clearScreen();
+		LCD_displayString("Plz re-enter the");
+		LCD_displayStringRowColumn(1, 0, "same pass: ");
+
+		for (i = 0; i < PASS_LENGTH; ++i) {
+			pass[i] = KEYPAD_getPressedKey();
+			LCD_displayCharacter('*');
+			_delay_ms(500);
+		}
+
+		while (KEYPAD_getPressedKey() != '=')
+			;
+		_delay_ms(500);
+
+		UART_sendString(pass, PASS_LENGTH);
+
+		receiveData = UART_recieveByte();
+
+	}
+
+	while (1) {
+		LCD_clearScreen();
+		LCD_displayString("+ : OPEN DOOR");
+		LCD_displayStringRowColumn(1, 0, "- : CHANGE PASS");
+		uint8 inputKey;
+		do {
+			inputKey = KEYPAD_getPressedKey();
+		} while (inputKey != '+' && inputKey != '-');
+
+		switch (inputKey) {
+		case OPEN_DOOR:
+			break;
+		case CHANGE_PASS:
+
+			break;
+		}
+
+	}
+
+	return 0;
+}

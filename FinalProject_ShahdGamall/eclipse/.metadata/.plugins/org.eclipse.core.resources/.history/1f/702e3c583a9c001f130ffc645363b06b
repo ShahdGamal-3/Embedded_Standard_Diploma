@@ -1,0 +1,58 @@
+/*
+ * HMI_main.c
+ *
+ *  Created on: Nov 1, 2024
+ *      Author: shahd
+ */
+
+#include "HMI.h"
+
+int main(void) {
+    initSystem();
+    receiveData = PASS_WRONG;
+
+    // Initial password verification
+    while (receiveData == PASS_WRONG) {
+        verifyPassword();
+    }
+
+    while (1) {
+        LCD_clearScreen();
+        LCD_displayString("+ : OPEN DOOR");
+        LCD_displayStringRowColumn(1, 0, "- : CHANGE PASS");
+
+        uint8 inputKey;
+        do {
+            inputKey = KEYPAD_getPressedKey();
+        } while (inputKey != '+' && inputKey != '-');
+
+        receiveData = PASS_WRONG;
+
+        while (receiveData == PASS_WRONG) {
+            UART_sendByte(inputKey);
+
+            LCD_clearScreen();
+            LCD_displayString("Plz enter old pass:");
+            enterPassword();
+
+            receiveData = UART_recieveByte();
+            if (receiveData == PASS_WRONG_3) {
+                lockSystem();
+                break;
+            }
+        }
+
+        if (receiveData == PASS_CORRECT) {
+            switch (inputKey) {
+            case OPEN_DOOR:
+                unlockDoor();
+                break;
+
+            case CHANGE_PASS:
+                changePassword();
+                break;
+            }
+        }
+    }
+    return 0;
+}

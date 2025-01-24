@@ -1,0 +1,15 @@
+/*
+ * HMI_main.c
+ *
+ *  Created on: Nov 1, 2024
+ *      Author: shahd
+ */
+
+#include "UART.h"
+#include "LCD.h"
+#include "Keypad.h"
+
+int main (void)
+{
+
+}

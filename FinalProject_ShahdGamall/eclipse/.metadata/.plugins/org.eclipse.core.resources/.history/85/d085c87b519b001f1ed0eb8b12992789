@@ -1,0 +1,28 @@
+/*******************************************************************************
+ *
+ * Module: Main Control Unit (Control_ECU)
+ *
+ * File Name: control_main.c
+ *
+ * Description: Main program for Control_ECU in a dual microcontroller door
+ *              locking system without FreeRTOS.
+ *
+ * Created on: Oct 24, 2024
+ *
+ *******************************************************************************/
+
+#include "uart.h"
+#include "external_eeprom.h"
+#include "dc_motor.h"
+#include "pir_sensor.h"
+#include "timer.h"
+#include "buzzer.h"
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+	for(;;);
+	return 0;
+
+}

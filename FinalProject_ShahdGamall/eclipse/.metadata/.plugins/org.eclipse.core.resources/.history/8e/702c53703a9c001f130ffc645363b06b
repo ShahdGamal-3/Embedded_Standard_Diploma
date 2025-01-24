@@ -1,0 +1,40 @@
+/*******************************************************************************
+ *
+ * Module: Main Control Unit (Control_ECU)
+ *
+ * File Name: control_main.c
+ *
+ * Description: Main program for Control_ECU in a dual microcontroller door
+ *              locking system.
+ *
+ * Created on: Oct 24, 2024
+ *
+ * Author: Shahd Gamal
+ *
+ *******************************************************************************/
+#include "Control.h"
+
+int main(void) {
+    initializeSystem();
+    loadPasswordFromEEPROM();
+
+    handlePasswordSetup();
+
+    while (1) {
+        receiveData = UART_recieveByte();
+        if (receiveData == OPEN_DOOR || receiveData == CHANGE_PASS) {
+            handlePasswordVerification();
+            if (matchedPassword == TRUE) {
+                switch (receiveData) {
+                    case OPEN_DOOR:
+                        handleDoorOperation();
+                        break;
+                    case CHANGE_PASS:
+                        handlePasswordChange();
+                        break;
+                }
+            }
+        }
+    }
+    return 0;
+}

@@ -1,0 +1,177 @@
+/*******************************************************************************
+ *
+ * Module: Main Control Unit (Control_ECU)
+ *
+ * File Name: control_main.c
+ *
+ * Description: Main program for Control_ECU in a dual microcontroller door
+ *              locking system without FreeRTOS.
+ *
+ * Created on: Oct 24, 2024
+ *
+ *******************************************************************************/
+
+#include "external_eeprom.h"
+#include "pir_sensor.h"
+#include "dc_motor.h"
+#include "buzzer.h"
+#include "timer.h"
+#include "uart.h"
+
+#define PASS_CORRECT 	0x00
+#define PASS_WRONG 		0x01
+
+#define PASS_WRONG_3	0x05
+
+#define PASS_1_MIN		0x06
+
+#define OPEN_DOOR		'+'
+#define CHANGE_PASS		'-'
+
+#define PASS_ADDR		 0x0000
+
+#define PASS_LENGTH 	5
+
+#define PEOPLE_ENTERING 0x02
+#define NO_PEOPLE       0x03
+
+#define DOOR_CLOSED      0x04
+
+uint8 passCorrect[PASS_LENGTH];
+uint8 pass[PASS_LENGTH];
+uint8 pass2[PASS_LENGTH];
+uint8 receiveData;
+uint8 i;
+uint8 matchedPassword = FALSE;
+
+volatile uint16 counter = 0;
+void timer1_intteruptHandle(void) {
+	counter++;
+}
+
+void delay(uint8 timeMs) {
+	timeMs /= 500;
+	counter = 0;
+	while (counter < timeMs)
+		;
+}
+
+int main(void) {
+	TIMER_t timer1 = { .timer_ID = TIMER1_ID, .initial_value = 0,
+			.compare_value = 7812 / 2, .timer_clock = TIMER_PRESCALER_1024,
+			.mode = TIMER_MODE_COMPARE };
+	TIMER_init(&timer1);
+	TIMER_setCallBack(timer1_intteruptHandle, TIMER1_ID);
+
+	UART_ConfigType uart = { .baud_rate = 9600, .parity_mode = PARITY_DISABLE,
+			.stopbit_mode = ONE_BIT, .data_mode = EIGHT_BIT };
+
+	UART_init(&uart);
+	Buzzer_init(&g_buzzer1);
+	DcMotor_Init();
+	PIR_init(g_pir1);
+
+	while (matchedPassword == FALSE) {
+
+		UART_receiveString(pass, PASS_LENGTH);
+
+		UART_receiveString(pass2, PASS_LENGTH);
+
+		matchedPassword = TRUE;
+		for (i = 0; i < PASS_LENGTH; i++) {
+			if (pass[i] != pass2[i]) {
+				matchedPassword = FALSE;
+				break;
+			}
+		}
+
+		if (matchedPassword == FALSE) {
+			UART_sendByte(PASS_WRONG);
+		} else {
+			UART_sendByte(PASS_CORRECT);
+			EEPROM_writeString(PASS_ADDR, pass, PASS_LENGTH);
+
+			for (i = 0; i < PASS_LENGTH; i++) {
+				passCorrect[i] = pass[i];
+			}
+		}
+	}
+
+	uint8 wrongPassCount = 0;
+	while (1) {
+		receiveData = UART_recieveByte();
+
+		uint8 operation = receiveData;
+		UART_receiveString(pass, PASS_LENGTH);
+
+		matchedPassword = TRUE;
+		for (i = 0; i < PASS_LENGTH; i++) {
+			if (pass[i] != pass2[i]) {
+				matchedPassword = FALSE;
+				break;
+			}
+		}
+
+		if (!matchedPassword) {
+			wrongPassCount++;
+			if (wrongPassCount > 2) {
+				UART_sendByte(PASS_WRONG_3);
+				Buzzer_on(&g_buzzer1);
+				_delay_ms(2000);
+				Buzzer_off(&g_buzzer1);
+				UART_sendByte(PASS_1_MIN);
+			} else {
+				UART_sendByte(PASS_WRONG);
+			}
+		} else {
+			wrongPassCount = 0;
+			UART_sendByte(PASS_CORRECT);
+			switch (operation) {
+			case OPEN_DOOR:
+				DcMotor_Rotate(DC_MOTOR_CW);
+				_delay_ms(1000);
+				DcMotor_Rotate(DC_MOTOR_STOP);
+				if (PIR_getState(g_pir1) == PIR_STATE_MOTION) {
+					UART_sendByte(PEOPLE_ENTERING);
+					while (PIR_getState(g_pir1) == PIR_STATE_MOTION)
+						;
+				}
+				UART_sendByte(NO_PEOPLE);
+				DcMotor_Rotate(DC_MOTOR_ACW);
+				_delay_ms(1000);
+				DcMotor_Rotate(DC_MOTOR_STOP);
+				UART_sendByte(DOOR_CLOSED);
+
+				break;
+			case CHANGE_PASS:
+				UART_receiveString(pass, PASS_LENGTH);
+
+				UART_receiveString(pass2, PASS_LENGTH);
+
+				matchedPassword = TRUE;
+				for (i = 0; i < PASS_LENGTH; i++) {
+					if (pass[i] != pass2[i]) {
+						matchedPassword = FALSE;
+						break;
+					}
+				}
+
+				if (matchedPassword == FALSE) {
+					UART_sendByte(PASS_WRONG);
+				} else {
+					UART_sendByte(PASS_CORRECT);
+					EEPROM_writeString(PASS_ADDR, pass, PASS_LENGTH);
+
+					for (i = 0; i < PASS_LENGTH; i++) {
+						passCorrect[i] = pass[i];
+					}
+				}
+				break;
+			}
+		}
+
+	}
+
+	return 0;
+
+}

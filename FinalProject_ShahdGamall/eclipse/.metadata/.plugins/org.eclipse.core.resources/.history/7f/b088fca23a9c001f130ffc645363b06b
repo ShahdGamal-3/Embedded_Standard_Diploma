@@ -1,0 +1,51 @@
+/*
+ * Control.h
+ *
+ *  Created on: Nov 6, 2024
+ *      Author: shahd
+ */
+
+#ifndef CONTROL_H_
+#define CONTROL_H_
+
+#include "external_eeprom.h"
+#include "pir_sensor.h"
+#include "dc_motor.h"
+#include "buzzer.h"
+#include "timer.h"
+#include "uart.h"
+
+#define PASS_CORRECT    0x00
+#define PASS_WRONG      0x01
+#define PASS_WRONG_3    0x05
+#define PASS_1_MIN      0x06
+#define OPEN_DOOR       '+'
+#define CHANGE_PASS     '-'
+#define PASS_ADDR       0x0000
+#define PASS_LENGTH     5
+#define PEOPLE_ENTERING 0x02
+#define NO_PEOPLE       0x03
+#define DOOR_CLOSED     0x04
+
+uint8 passCorrect[PASS_LENGTH];
+uint8 pass[PASS_LENGTH];
+uint8 pass2[PASS_LENGTH];
+uint8 receiveData;
+uint8 matchedPassword = FALSE;
+uint8 wrongPassCount = 0;
+volatile uint16 counter = 0;
+
+// Function prototypes
+void timer1_interruptHandle(void);
+void delay(uint16 timeMs);
+void initializeSystem(void);
+void getPasswordFromUser(uint8* passBuffer);
+void storePassword(uint8* password);
+void loadPasswordFromEEPROM(void);
+uint8 verifyPassword(uint8* password1, uint8* password2);
+void handlePasswordSetup(void);
+void handlePasswordChange(void);
+void handleDoorOperation(void);
+void handlePasswordVerification(void);
+
+#endif /* CONTROL_H_ */

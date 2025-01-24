@@ -1,0 +1,32 @@
+/*
+ * PIRsensor.h
+ *
+ *  Created on: ٣١‏/١٠‏/٢٠٢٤
+ *      Author: shahd
+ */
+
+#ifndef PIR_SENSOR_H_
+#define PIR_SENSOR_H_
+
+
+#include "std_types.h"
+
+#define PIR_PORT_ID  PORTC_ID
+#define PIR_PIN_ID   PIN2_ID
+
+typedef enum {
+  PIR_STATE_NO_MOTION, /**< No motion detected */
+  PIR_STATE_MOTION     /**< Motion detected    */
+} PIR_state;
+
+typedef struct {
+  uint8 port :2; /**< Port number (e.g., PORTA_ID, PORTB_ID) */
+  uint8 pin :3;  /**< Pin number on the port (e.g., PIN0_ID, PIN1_ID) */
+} PIR_t;
+
+extern PIR_t g_pir1;
+
+void PIR_init(PIR_t pir) ;
+uint8 PIR_getState(PIR_t pir);
+
+#endif /* PIR_SENSOR_H_ */

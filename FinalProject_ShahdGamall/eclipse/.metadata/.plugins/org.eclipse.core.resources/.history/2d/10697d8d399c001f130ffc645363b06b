@@ -1,0 +1,58 @@
+/******************************************************************************
+ *
+ * Module Name: PIR Sensor
+ * File Name: PIRsensor.c
+ * Description: Source file for the PIR (Passive Infrared) sensor driver,
+ *              providing initialization and state-checking functions to detect
+ *              motion within the sensor’s range.
+ * Author: Shahd Gamal
+ * Date: 2024-10-31
+ *
+ *******************************************************************************/
+
+#include "pir_sensor.h"
+#include <avr/io.h>
+#include "gpio.h"
+#include "common_macros.h"
+
+/*
+ * Global instance for the PIR sensor configuration with
+ * specific port and pin settings for motion detection.
+ */
+PIR_t g_pir1 = { .port = PORTC_ID, .pin = PIN2_ID };
+
+/*
+ * Function: PIR_init
+ * ------------------
+ * Initializes the specified PIR sensor by setting the pin as an input.
+ *
+ * Parameters:
+ *      pir - A PIR_t structure containing the port and pin configuration of the PIR sensor.
+ *
+ * Returns: None
+ */
+void PIR_init(PIR_t pir) {
+    /* Set the PIR sensor pin as input */
+    GPIO_setupPinDirection(pir.port, pir.pin, PIN_INPUT);
+}
+
+/*
+ * Function: PIR_getState
+ * ----------------------
+ * Reads the state of the PIR sensor to check for motion.
+ *
+ * Parameters:
+ *      pir - A PIR_t structure containing the port and pin configuration of the PIR sensor.
+ *
+ * Returns:
+ *      uint8 - PIR_STATE_MOTION if motion is detected (pin is HIGH),
+ *              PIR_STATE_NO_MOTION if no motion is detected (pin is LOW).
+ */
+uint8 PIR_getState(PIR_t pir) {
+    /* Check if the PIR sensor pin is HIGH (motion detected) */
+    if (LOGIC_HIGH == GPIO_readPin(pir.port, pir.pin)) {
+        return PIR_STATE_MOTION;
+    } else {
+        return PIR_STATE_NO_MOTION;
+    }
+}

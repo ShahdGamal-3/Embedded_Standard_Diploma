@@ -1,0 +1,10 @@
+build.all.configs.enabled=false
+eclipse.preferences.version=1
+environment/workspace/AVR32_HOME/delimiter=;
+environment/workspace/AVR32_HOME/operation=replace
+environment/workspace/AVR32_HOME/value=C\:\\WinAVR-20100110
+environment/workspace/append=true
+environment/workspace/appendContributed=true
+environment/workspace/avr/delimiter=;
+environment/workspace/avr/operation=append
+environment/workspace/avr/value=C\:\\WinAVR-20100110\\bin

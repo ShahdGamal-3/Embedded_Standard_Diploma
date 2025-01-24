@@ -1,0 +1,44 @@
+/*
+ * HMI.h
+ *
+ *  Created on: Nov 6, 2024
+ *      Author: shahd
+ */
+
+#ifndef HMI_H_
+#define HMI_H_
+
+#include "Keypad.h"
+#include "timer.h"
+#include "uart.h"
+#include "LCD.h"
+
+#define PASS_CORRECT 0x00
+#define PASS_WRONG 0x01
+
+#define PASS_WRONG_3 0x05
+
+#define OPEN_DOOR '+'
+#define CHANGE_PASS '-'
+
+#define PASS_LENGTH 5
+
+#define PEOPLE_ENTERING 0x02
+#define NO_PEOPLE 0x03
+
+uint8 pass[PASS_LENGTH];
+uint8 receiveData;
+uint8 i = 0;
+volatile uint16 counter = 0;
+
+// Function prototypes
+void initSystem(void);
+void delay(uint16 timeMs);
+void enterPassword(void);
+void verifyPassword(void);
+void lockSystem(void);
+void unlockDoor(void);
+void changePassword(void);
+void timer1_interruptHandle(void);
+
+#endif /* HMI_H_ */

@@ -1,0 +1,41 @@
+/*
+ * HMI_main.c
+ *
+ *  Created on: Nov 1, 2024
+ *      Author: shahd
+ */
+
+#include "UART.h"
+#include "LCD.h"
+#include "Keypad.h"
+
+void HMI_MainFunction(void) {
+    // Initialization
+	UART_ConfigType uart_config = {.baud_rate=9600, .parity_mode=DISABLED, .stopbit_mode=ONE_BIT, .data_mode=EIGHT_BIT};
+    UART_init(&uart_config);
+    LCD_init();
+    Keypad_init();
+
+    while (1) {
+        LCD_display("Enter Password: ");
+        uint8 entered_password[5];
+
+        for (uint8 i = 0; i < 5; i++) {
+            entered_password[i] = Keypad_getPressedKey();
+            LCD_display("*"); // Display masked input
+            _delay_ms(500);   // Debounce delay
+        }
+
+        // Send password to Control ECU for verification
+        UART_sendArray(entered_password, 5);
+
+        // Receive confirmation from Control ECU
+        uint8 response = UART_receiveByte();
+        if (response == PASSWORD_CORRECT) {
+            LCD_display("Access Granted");
+        } else {
+            LCD_display("Incorrect Password");
+        }
+    }
+}
+

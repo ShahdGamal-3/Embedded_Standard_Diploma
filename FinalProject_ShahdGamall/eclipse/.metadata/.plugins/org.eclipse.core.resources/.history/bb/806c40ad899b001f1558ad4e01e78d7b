@@ -1,0 +1,225 @@
+/*
+ * HMI_main.c
+ *
+ *  Created on: Nov 1, 2024
+ *      Author: shahd
+ */
+
+#include "uart.h"
+#include "LCD.h"
+#include "Keypad.h"
+#include "timer.h"
+#include <util/delay.h>
+
+#define PASS_CORRECT 0x00
+#define PASS_WRONG 0x01
+
+#define PASS_WRONG_3	0x05
+
+#define OPEN_DOOR	'+'
+#define CHANGE_PASS	'-'
+
+#define PASS_LENGTH 5
+
+#define PEOPLE_ENTERING  0x02
+#define NO_PEOPLE  0x03
+
+uint8 pass[PASS_LENGTH];
+uint8 receiveData;
+uint8 i = 0;
+
+volatile uint16 counter = 0;
+void timer1_intteruptHandle(void) {
+	counter++;
+}
+
+void delay(uint8 timeMs) {
+	timeMs /= 500;
+	counter = 0;
+	while (counter < timeMs)
+		;
+}
+
+int main(void) {
+	LCD_init();
+
+	UART_ConfigType uart = { .baud_rate = 9600, .parity_mode = PARITY_DISABLE,
+			.stopbit_mode = ONE_BIT, .data_mode = EIGHT_BIT };
+
+	UART_init(&uart);
+
+	TIMER_t timer1 = { .timer_ID = TIMER1_ID, .initial_value = 0,
+			.compare_value = 7812 / 2, .timer_clock = TIMER_PRESCALER_1024,
+			.mode = TIMER_MODE_COMPARE };
+
+	TIMER_init(&timer1);
+	TIMER_setCallBack(timer1_intteruptHandle, TIMER1_ID);
+
+	__asm__("SEI");
+
+	LCD_displayString("Door Lock System");
+	delay(1000);
+
+	receiveData = PASS_WRONG;
+	while (receiveData == PASS_WRONG) {
+
+		LCD_clearScreen();
+		LCD_displayString("Plz Enter Pass:");
+		LCD_moveCursor(1, 0);
+
+		for (i = 0; i < PASS_LENGTH; ++i) {
+			do {
+				pass[i] = KEYPAD_getPressedKey();
+			} while (!(pass[i] >= 0 && pass[i] <= 9));
+
+			LCD_displayCharacter('*');
+			delay(500);
+		}
+
+		while (KEYPAD_getPressedKey() != '=')
+			;
+
+		delay(500);
+
+		UART_sendString(pass, PASS_LENGTH);
+
+		LCD_clearScreen();
+		LCD_displayString("Plz re-enter the");
+		LCD_displayStringRowColumn(1, 0, "same pass: ");
+
+		for (i = 0; i < PASS_LENGTH; ++i) {
+			pass[i] = KEYPAD_getPressedKey();
+			LCD_displayCharacter('*');
+			_delay_ms(500);
+		}
+
+		while (KEYPAD_getPressedKey() != '=')
+			;
+		_delay_ms(500);
+
+		UART_sendString(pass, PASS_LENGTH);
+
+		receiveData = UART_recieveByte();
+
+	}
+
+	while (1) {
+		LCD_clearScreen();
+		LCD_displayString("+ : OPEN DOOR");
+		LCD_displayStringRowColumn(1, 0, "- : CHANGE PASS");
+		uint8 inputKey;
+		do {
+			inputKey = KEYPAD_getPressedKey();
+		} while (inputKey != '+' && inputKey != '-');
+		receiveData = PASS_WRONG;
+		while (receiveData == PASS_WRONG) {
+			UART_sendByte(inputKey);
+
+			LCD_clearScreen();
+			LCD_displayString("Plz enter old");
+			LCD_displayStringRowColumn(1, 0, "pass: ");
+
+			for (i = 0; i < PASS_LENGTH; ++i) {
+				do {
+					pass[i] = KEYPAD_getPressedKey();
+				} while (!(pass[i] >= 0 && pass[i] <= 9));
+
+				LCD_displayCharacter('*');
+				_delay_ms(500);
+			}
+
+			while (KEYPAD_getPressedKey() != '=')
+				;
+
+			_delay_ms(500);
+
+			UART_sendString(pass, PASS_LENGTH);
+
+			receiveData = UART_recieveByte();
+			if (receiveData == PASS_WRONG_3) {
+				LCD_clearScreen();
+				LCD_displayString("System Locked");
+				LCD_displayStringRowColumn(1, 0, "Wait for 1 min");
+				UART_recieveByte();
+				break;
+			}
+		}
+
+		if (receiveData == PASS_CORRECT) {
+			switch (inputKey) {
+			case OPEN_DOOR:
+				LCD_clearScreen();
+				LCD_displayString("Door Unlocking");
+				LCD_moveCursor(1, 3);
+				LCD_displayString("Please Wait");
+
+				receiveData = UART_recieveByte();
+
+				if (receiveData == PEOPLE_ENTERING) {
+					LCD_clearScreen();
+					LCD_displayString("Wait For Peaple");
+					UART_recieveByte();
+				}
+				LCD_clearScreen();
+				LCD_displayString("Door Locking");
+				UART_recieveByte();
+				break;
+
+			case CHANGE_PASS:
+				LCD_clearScreen();
+				LCD_displayString("Plz Enter Pass:");
+				LCD_moveCursor(1, 0);
+
+				for (i = 0; i < PASS_LENGTH; ++i) {
+					do {
+						pass[i] = KEYPAD_getPressedKey();
+					} while (!(pass[i] >= 0 && pass[i] <= 9));
+
+					LCD_displayCharacter('*');
+					_delay_ms(500);
+				}
+
+				while (KEYPAD_getPressedKey() != '=')
+					;
+
+				_delay_ms(500);
+
+				UART_sendString(pass, PASS_LENGTH);
+
+				LCD_clearScreen();
+				LCD_displayString("Plz re-enter the");
+				LCD_displayStringRowColumn(1, 0, "same pass: ");
+
+				for (i = 0; i < PASS_LENGTH; ++i) {
+					pass[i] = KEYPAD_getPressedKey();
+					LCD_displayCharacter('*');
+					_delay_ms(500);
+				}
+
+				while (KEYPAD_getPressedKey() != '=')
+					;
+				_delay_ms(500);
+
+				UART_sendString(pass, PASS_LENGTH);
+
+				receiveData = UART_recieveByte();
+
+				if (receiveData == PASS_CORRECT) {
+					LCD_clearScreen();
+					LCD_displayString("Pass changed");
+					_delay_ms(500);
+				} else {
+					LCD_clearScreen();
+					LCD_displayString("Pass not changed");
+					_delay_ms(500);
+
+				}
+
+				break;
+			}
+		}
+
+	}
+
+	return 0;
+}
